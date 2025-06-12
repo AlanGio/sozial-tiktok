@@ -1,24 +1,21 @@
-import { slides } from "../../slides";
-import Slide from "../../components/Slide";
+"use client";
 
-export default async function SlidePage({
+import { slides } from "../../slides";
+import SlideContent from "../../components/SlideContent";
+import { use } from "react";
+
+export default function SlidePage({
   params,
 }: {
   params: Promise<{ id: string }>;
 }) {
-  const { id: idString } = await params;
-  const id = parseInt(idString);
+  const resolvedParams = use(params);
+  const id = parseInt(resolvedParams.id);
   const slide = slides[id - 1];
 
   if (!slide) {
     return <div>Slide not found</div>;
   }
 
-  return <Slide content={slide} id={id} totalSlides={slides.length} />;
-}
-
-export async function generateStaticParams() {
-  return slides.map((_, index) => ({
-    id: (index + 1).toString(),
-  }));
+  return <SlideContent content={slide} id={id} totalSlides={slides.length} />;
 }
